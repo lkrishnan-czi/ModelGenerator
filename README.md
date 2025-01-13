@@ -51,6 +51,7 @@ See the [AIDO.ModelGenerator documentation](https://genbio-ai.github.io/ModelGen
 - [Balancing Locality and Reconstruction in Protein Structure Tokenizer](https://doi.org/10.1101/2024.12.02.626366)
 
 ## Installation
+#Note: This is missing flash_attn requirement
 ```
 git clone https://github.com/genbio-ai/ModelGenerator.git
 cd ModelGenerator
