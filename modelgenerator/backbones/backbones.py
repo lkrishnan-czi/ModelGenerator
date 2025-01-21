@@ -589,7 +589,8 @@ class GenBioCellFoundation(HFSequenceBackbone):
             CellFoundationConfig,
             CellFoundationModel,
         )
-
+        # print("Legacy Adapter Type:", legacy_adapter_type)
+        legacy_adapter_type = None
         super().__init__(legacy_adapter_type, default_config, **kwargs)
         self.max_length = max_length
         # Note: Legacy adapters are for older sequence models.

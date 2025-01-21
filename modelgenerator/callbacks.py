@@ -172,26 +172,23 @@ class PredictionWriter(Callback):
                 tensor_cols = {}
                 for i, file in enumerate(prediction_files):
                     data = torch.load(file)
-                    if i == 0:
+                    if i == 0:  # Initialize on the first file
                         for col, val in data.items():
-                            tensor_cols[col] = type(val) is torch.Tensor
+                            tensor_cols[col] = isinstance(val, torch.Tensor)
                             merged_data[col] = []
                     for col, val in data.items():
-                        if tensor_cols[col]:
+                        if tensor_cols[col]:  # Check if it's a tensor
                             merged_data[col].append(val)
-                        else:
-                            merged_data[col].extend(val)
-                for col, is_tensor in tensor_cols.items():
-                    if is_tensor:
-                        # Todo: remove, broken for different length tokenizations
-                        # NOTE: remove_special_tokens doesn't support pt filetype is because of this line
-                        merged_data[col] = torch.cat(merged_data[col], dim=0)
+                        else:  # Non-tensor values
+                            merged_data[col].extend(val if isinstance(val, list) else [val])
+                # Save merged data without concatenation
                 torch.save(
                     merged_data,
                     os.path.join(self.output_dir, f"{stage}_predictions.pt"),
                 )
-            else:
-                ValueError(f"filetype {self.filetype} does not support")
+                # Delete prediction_files
+                for file in prediction_files:
+                    os.remove(file)
 
     def on_test_batch_end(
         self, trainer, pl_module, predictions, batch, batch_idx, dataloader_idx=0

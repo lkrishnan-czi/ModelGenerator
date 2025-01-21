@@ -56,6 +56,9 @@ from .configuration_cellfoundation import CellFoundationConfig
 if is_flash_attn_2_available():
     from flash_attn import flash_attn_func, flash_attn_varlen_func
     from flash_attn.bert_padding import index_first_axis, pad_input, unpad_input  # noqa
+else:
+    flash_attn_func = None
+    flash_attn_varlen_func = None
 
 import torch.nn.functional as F
 
@@ -594,6 +597,7 @@ class CellFoundationAttention(nn.Module):
         self.ln = config.norm_cls(config.hidden_size, eps=config.layer_norm_eps)
 
         position_embedding_type = config.position_embedding_type
+        config._use_flash_attention_2 = True
 
         assert (
             config._use_flash_attention_2 == True
